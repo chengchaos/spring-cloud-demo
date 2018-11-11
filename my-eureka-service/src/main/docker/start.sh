@@ -15,7 +15,7 @@ function do_start {
     # 内部变量保存 jar 路径和  log 路径
     # 每个文件都需要修改这个两个变量
     #
-    local run_jar_path='/my-eureka-1.0.1.jar'
+    local run_jar_path='/my-eureka-service.jar'
     local run_log_path='/logs/my-eureka.log'
     # 启动命令:
     local exec_cmd="java -jar $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom ${run_jar_path} $* >> ${run_log_path} 2>&1"
