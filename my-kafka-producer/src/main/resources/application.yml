@@ -1,0 +1,46 @@
+# spring.cloud.stream.default.producer.headerMode=embeddedHeaders
+# spring.cloud.stream.default.consumer.headerMode=embeddedHeaders
+#spring:
+#  cloud:
+#    stream:
+#      default:
+#        producer:
+#          headerMode: embeddedHeaders
+#        consumer:
+#          headerMode: embeddedHeaders
+
+kafka:
+  ## consumer
+  consumer:
+    zookeeper:
+      connect: 192.168.1.3:2181
+    servers: 192.168.1.3:9092
+    enable:
+      auto:
+        commit: true
+    session:
+      timeout: 6000
+    auto:
+      commit:
+        interval: 100
+      offset:
+        reset: latest
+    topic: chaos-topic
+    group:
+      id: chaos
+    concurrency: 10
+  ## producer
+  producer:
+    servers: 192.168.1.3:9092
+    retries: 0
+    batch:
+      size: 4096
+    linger: 1
+    buffer:
+      memory: 40960
+  topic:
+    default: chaos-topic
+
+log:
+  level: info
+  path: ./target/logs/

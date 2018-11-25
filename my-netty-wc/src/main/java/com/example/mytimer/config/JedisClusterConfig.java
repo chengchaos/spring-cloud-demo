@@ -30,7 +30,7 @@ import redis.clients.jedis.JedisPoolConfig;
 /**
  * https://blog.csdn.net/liubenlong007/article/details/53689306
  */
-@Configuration
+//@Configuration
 public class JedisClusterConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JedisClusterConfig.class);
