@@ -22,6 +22,7 @@ public class WebSocketClient {
     }
 
     @OnMessage
+
     public void onMessage(String message) {
 
         System.out.println("clicent .. on Message : "+ message);
@@ -38,6 +39,9 @@ public class WebSocketClient {
 
         String userID = "18";
         String clentUrl = "ws://localhost:8080/myHandler/"+ userID;
+
+        String token = "30F31B4D1DF545EB869280D21D9C087D";
+        clentUrl = "ws://localhost:8080/ws-command/v1/"+ token;
 
         WebSocketContainer container = null;
         try {
@@ -99,12 +103,9 @@ public class WebSocketClient {
                     System.out.println("remoteAddr "+ remoteAddr);
 
 
-                    org.eclipse.jetty.websocket.api.RemoteEndpoint remoteEndpoint = jettySession.getRemote();
-                    ByteBuffer buf = ByteBuffer.wrap(new byte[] { 0x11, 0x22, 0x33, 0x44 });
-                    remoteEndpoint.sendBytes(buf);
-
-
-
+//                    org.eclipse.jetty.websocket.api.RemoteEndpoint remoteEndpoint = jettySession.getRemote();
+//                    ByteBuffer buf = ByteBuffer.wrap(new byte[] { 0x11, 0x22, 0x33, 0x44 });
+//                    remoteEndpoint.sendBytes(buf);
 
 
                     clientSession.getBasicRemote().sendText("javaclient: "+ line);
@@ -123,6 +124,8 @@ public class WebSocketClient {
         }
 
 
+        System.out.println("++++ done ++++");
+        System.exit(0);
     }
 }
 
