@@ -2,6 +2,7 @@ package cn.chengchaos.config;
 
 import cn.chengchaos.entity.MessageEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -55,15 +56,16 @@ public class KafkaProducerConfig {
 
     }
 
-    public ProducerFactory<String, MessageEntity> producerFactory() {
+    public ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs()
                 , new StringSerializer()
-                , new JsonSerializer<>()
+                //, new JsonSerializer<>()
+                , new StringSerializer()
                 );
 
     }
     @Bean
-    public KafkaTemplate<String, MessageEntity> kafkaTemplate() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

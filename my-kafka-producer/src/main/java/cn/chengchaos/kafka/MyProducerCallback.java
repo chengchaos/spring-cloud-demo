@@ -1,6 +1,5 @@
 package cn.chengchaos.kafka;
 
-import cn.chengchaos.entity.MessageEntity;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,16 +7,16 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 
-public class MyProducerCallback implements ListenableFutureCallback<SendResult<String, MessageEntity>> {
+public class MyProducerCallback implements ListenableFutureCallback<SendResult<String, String>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyProducerCallback.class);
 
 
     private long startTime;
     private String key;
-    private MessageEntity message;
+    private String message;
 
-    public MyProducerCallback(long startTime, String key , MessageEntity message) {
+    public MyProducerCallback(long startTime, String key , String message) {
         this.startTime = startTime;
         this.key = key;
         this.message = message;
@@ -25,7 +24,7 @@ public class MyProducerCallback implements ListenableFutureCallback<SendResult<S
 
 
     @Override
-    public void onSuccess(SendResult<String, MessageEntity> result) {
+    public void onSuccess(SendResult<String, String> result) {
 
         if (result == null) {
             return;
@@ -41,16 +40,16 @@ public class MyProducerCallback implements ListenableFutureCallback<SendResult<S
 
             long elapsedTime = System.currentTimeMillis() - startTime;
             StringBuilder record = new StringBuilder();
-            record.append("message(")
+            record.append("message: {")
                     .append("key = ").append(key)
                     .append(", messsage = ").append(message)
-                    .append(") sent to partition(")
+                    .append(", sent to partition(")
                     .append(metadata.partition())
                     .append(") with offset(")
                     .append(metadata.offset())
                     .append(") in ")
                     .append(elapsedTime)
-                    .append(" ms !!!");
+                    .append(" ms !!!}");
 
             LOGGER.info("发送成功 >>>> {}", record);
         }

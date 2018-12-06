@@ -45,12 +45,13 @@ public class KafkaConsumerConfig {
 
 
 
-    public ConsumerFactory<String, MessageEntity> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactory() {
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs()
                 , new StringDeserializer()
-                , new JsonDeserializer<>(MessageEntity.class)
+                //, new JsonDeserializer<>(String.class)
+                ,  new StringDeserializer()
         );
     }
 
@@ -65,7 +66,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-//        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
 
         return props;
@@ -73,10 +73,10 @@ public class KafkaConsumerConfig {
 
     @Bean
     public
-    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MessageEntity>>
+    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>>
     kafkaListenerContainerFactory() {
 
-        ConcurrentKafkaListenerContainerFactory<String, MessageEntity> factory =
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());

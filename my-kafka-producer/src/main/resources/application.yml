@@ -13,8 +13,8 @@ kafka:
   ## consumer
   consumer:
     zookeeper:
-      connect: 192.168.1.3:2181
-    servers: 192.168.1.3:9092
+      connect: 192.168.88.132:2181
+    servers: 192.168.88.132:9092
     enable:
       auto:
         commit: true
@@ -31,7 +31,7 @@ kafka:
     concurrency: 10
   ## producer
   producer:
-    servers: 192.168.1.3:9092
+    servers: 192.168.88.132:9092
     retries: 0
     batch:
       size: 4096

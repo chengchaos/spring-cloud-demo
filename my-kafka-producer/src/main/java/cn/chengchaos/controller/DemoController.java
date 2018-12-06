@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @RestController
 public class DemoController {
 
@@ -31,11 +33,25 @@ public class DemoController {
         return "hello";
     }
 
-    @PostMapping("/send")
-    public MessageResponse send(@RequestBody MessageEntity message) {
+    private AtomicInteger incr = new AtomicInteger();
 
-        LOGGER.info("message >>> {}", message);
-        producer.send(topic, "key", message);
+    private int getId() {
+
+        return incr.addAndGet(1);
+
+    }
+
+    @GetMapping("/send")
+    public MessageResponse send() {
+
+        MessageEntity message = new MessageEntity();
+        for (int i = 0; i < 10; i++) {
+            int id = getId();
+            message.setId(id + "");
+            message.setName("chengchao "+ id);
+            LOGGER.info("message >>> {}", message);
+            producer.send(topic, "key", message);
+        }
 
         return new MessageResponse(ErrorCode.SUCCESS, "OK");
 

@@ -1,6 +1,7 @@
 package cn.chengchaos.kafka;
 
 import cn.chengchaos.entity.MessageEntity;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,7 +16,9 @@ public class SimpleConsumer {
 
     @KafkaListener(topics = "${kafka.topic.default}"
     , containerFactory = "kafkaListenerContainerFactory")
-    public void receive(MessageEntity message) {
+    public void receive(String message) {
+
+        MessageEntity messageEntity = JSON.parseObject(message, MessageEntity.class);
 
         LOGGER.info("接收到数据: <<<< {}", message);
     }
