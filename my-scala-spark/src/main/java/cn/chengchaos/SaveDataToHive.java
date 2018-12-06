@@ -1,31 +1,37 @@
 package cn.chengchaos;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class SaveDataToHive {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveDataToHive.class);
+
     private static final Pattern COMMOA = Pattern.compile(",");
 
     public static void main(String[] args) {
 
+//        System.setProperty("spark.sql.warehouse.dir","hdfs://minan-kf-2:8020/user/warehouseLocation/");
+//        yourSparkConf.set("spark.hadoop.validateOutputSpecs", "false")
+//        val sc = SparkContext(yourSparkConf)
+
+        System.setProperty("spark.hadoop.validateOutputSpecs", "false");
+
         SparkSession session = SparkSession.builder()
+
                 .master("local[2]")
                 .appName("SaveDataToHive")
                 //.config("spark.sql.warehouse.dir", warehouseLocation)
+                .config("spark.hadoop.validateOutputSpecs", "false")
                 .enableHiveSupport()
                 .getOrCreate();
 
@@ -37,19 +43,48 @@ public class SaveDataToHive {
         );
 
 
-        JavaSparkContext jsc = new JavaSparkContext(session.sparkContext());
-        jsc.parallelize(lines)
-                .saveAsTextFile("hdfs://minan-kf-2:8020/user/spark/info.txt");
+        String hdfsPrefix = "hdfs://minan-kf-2:8020";
+        String filePath = "/user/spark/info_txt"; // NOSONAR
 
-        session.sql(" CREATE TABLE IF NOT EXISTS test_cc (id STRING, name STRING, email STRING) " +
-                "row format delimited fields terminated by ','");
 
-        session.sql(" LOAD DATA INPATH 'hdfs://minan-kf-2:8020/user/spark/info.txt/part-*' INTO TABLE test_cc");
+        try (JavaSparkContext jsc = new JavaSparkContext(session.sparkContext())) {
 
-        session.sql("SELECT * FROM test_cc").show();
+            Configuration hadoopConf = jsc.hadoopConfiguration();
 
-        jsc.close();
-        session.stop();
+            org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(filePath);
+            FileSystem hdfs = FileSystem.get(hadoopConf);
+
+            LOGGER.info("准备删除目录");
+            if (hdfs.exists(path)) {
+                // false: 为防止误删，禁止递归删除
+                // true: ...
+                hdfs.delete(path, true);
+                LOGGER.info("删除目录: {}", path);
+            }
+
+            jsc.parallelize(lines)
+                    .saveAsTextFile(hdfsPrefix + filePath);
+
+            String createTable = " CREATE TABLE IF NOT EXISTS test_cc (id STRING, name STRING, email STRING) " +
+                    "row format delimited fields terminated by ',' ";
+            String loadData = " LOAD DATA INPATH '"+ filePath + "/part-*' INTO TABLE test_cc ";
+
+            String sqlSelect = "SELECT * FROM test_cc ";
+
+            LOGGER.info("创建表: {}", createTable);
+            session.sql(createTable);
+
+            LOGGER.info("装在数据:{}", loadData);
+            session.sql(loadData).show();
+
+            LOGGER.info("查询一下: {}", sqlSelect);
+            session.sql(sqlSelect).show();
+
+            session.stop();
+        } catch (IOException e) {
+            LOGGER.error("(*＾ー＾)", e);
+        }
+
 
     }
 }
