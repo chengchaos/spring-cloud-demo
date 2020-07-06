@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 #set -o nounset
 #set -o errexit
 echo ">>>>>>>>> 显示容器中的环境变量 :) "
@@ -10,7 +10,7 @@ echo "JAVA_OPTS=${JAVA_OPTS}"
 echo ">>>>>>>>> 显示启动命令 :) "
 echo "可以通过命令行传递参数. 例如 --server.port=8080 "
 
-function do_start {
+function do_start() {
     #
     # 内部变量保存 jar 路径和  log 路径
     # 每个文件都需要修改这个两个变量
@@ -18,13 +18,13 @@ function do_start {
     local run_jar_path='/my-eureka-service.jar'
     local run_log_path='/logs/my-eureka.log'
     # 启动命令:
-    local exec_cmd="java -jar $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom ${run_jar_path} $* >> ${run_log_path} 2>&1"
-    echo ${exec_cmd}
+    local exec_cmd="java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar ${run_jar_path} $* >> ${run_log_path} 2>&1"
+    echo "${exec_cmd}"
     echo ">>>>>>>>> 启动了 ;) "
     ${exec_cmd}
 }
 
-do_start $*
+do_start "$*"
 
 
 
