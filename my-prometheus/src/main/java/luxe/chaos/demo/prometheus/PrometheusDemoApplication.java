@@ -14,6 +14,8 @@ public class PrometheusDemoApplication {
     public static void main(String[] args) {
         SpringApplication.run(PrometheusDemoApplication.class, args);
     }
+
+
     @Bean
     MeterRegistryCustomizer<MeterRegistry> configurer(
             @Value("${spring.application.name}") String applicationName) {
