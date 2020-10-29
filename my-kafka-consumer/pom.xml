@@ -17,7 +17,7 @@
     <repositories>
         <repository>
             <id>fma-group</id>
-            <url>https://www.chengchaos.cn/nexus/repository/fma-group/</url>
+            <url>https://pts-tsp.futuremove.cn/nexus/repository/fma-group/</url>
         </repository>
     </repositories>
 
