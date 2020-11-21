@@ -1,6 +1,5 @@
 package luxe.chaos.train.springboottrain.controller;
 
-import com.sun.org.glassfish.gmbal.ParameterNames;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

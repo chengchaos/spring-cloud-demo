@@ -1,3 +1,15 @@
 spring:
   devtools:
     add-properties: true
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: shutdown
+  endpoint:
+    shutdown:
+      enabled: true
