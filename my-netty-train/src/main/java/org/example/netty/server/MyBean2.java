@@ -9,8 +9,6 @@ package org.example.netty.server;
  * </p>
  *
  * @author Cheng, Chao - 11/20/2020 10:50 PM <br />
- * @see [相关类方法]
- * @since [产品模块版本]
  */
 public class MyBean2 {
 
